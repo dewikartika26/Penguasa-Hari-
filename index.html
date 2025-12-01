@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Falakiyah Premium</title>
+    
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- React Framework Only -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- CSS LANGSUNG (ANTI-ERROR / ANTI-JELEK) -->
+    <style>
+        /* RESET & BASE */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+
+        /* ANIMATED BACKGROUND (AURORA) */
+        .bg-aurora {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            z-index: -2;
+        }
+        .bg-stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(white 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        /* MAIN CARD CONTAINER */
+        .app-container {
+            width: 100%;
+            max-width: 400px; /* Ukuran standar HP */
+            background: rgba(20, 20, 20, 0.85); /* Gelap transparan */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            padding-bottom: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* NEON BORDER EFFECT */
+        .neon-pulse {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 25px;
+            border: 2px solid transparent;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            animation: pulseBorder 3s infinite alternate;
+            pointer-events: none;
+        }
+        @keyframes pulseBorder {
+            0% { border-color: rgba(0, 255, 136, 0.3); }
+            100% { border-color: rgba(0, 255, 136, 0.8); box-shadow: 0 0 25px rgba(0, 255, 136, 0.4); }
+        }
+
+        /* HEADER */
+        .header {
+            padding: 20px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-badge {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        .status-day { color: #facc15; background: rgba(250, 204, 21, 0.15); }
+        .status-night { color: #60a5fa; background: rgba(96, 165, 250, 0.15); }
+        
+        .time-display { font-size: 32px; font-weight: 700; color: #fff; letter-spacing: -1px; line-height: 1; }
+        .sun-times { font-size: 11px; color: #aaa; text-align: right; line-height: 1.4; font-family: monospace; }
+
+        /* BUBBLES & CARDS */
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #10b981; /* Green Neon */
+            margin: 15px 20px 8px;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 5px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 15px;
+            margin: 0 15px 12px;
+            position: relative;
+        }
+
+        .planet-card {
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(0,0,0,0));
+            border-color: rgba(234, 179, 8, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* TYPOGRAPHY CONTENT */
+        .content-label { font-size: 10px; text-transform: uppercase; color: #888; font-weight: 700; margin-bottom: 4px; }
+        .content-text { font-size: 13px; line-height: 1.6; color: #eee; font-style: italic; font-family: 'Georgia', serif; text-align: justify; }
+        .content-kunci { font-family: monospace; font-size: 12px; color: #a7f3d0; font-style: normal; }
+        
+        /* HIGHLIGHTS */
+        .hl-yellow { color: #fde047; font-weight: bold; }
+        .hl-blue { color: #93c5fd; font-weight: bold; }
+        .hl-green { color: #6ee7b7; font-weight: bold; }
+
+        /* AI SECTION */
+        .ai-btn {
+            display: block;
+            width: calc(100% - 30px);
+            margin: 10px auto;
+            padding: 12px;
+            background: linear-gradient(90deg, #059669, #0d9488);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            cursor: pointer;
+        }
+        .ai-input {
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            font-family: sans-serif;
+            font-size: 13px;
+            min-height: 80px;
+            margin-bottom: 10px;
+        }
+        .ai-result { font-size: 12px; color: #ddd; margin-top: 10px; line-height: 1.5; }
+
+        /* ICONS */
+        svg { width: 18px; height: 18px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+
+<div class="bg-aurora"></div>
+<div class="bg-stars"></div>
+<div id="root"></div>
+
+<script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    // --- LOGIKA MATH (NOAA) ---
+    const calculateSunTimes = (date, lat, lng) => {
+        const radians = (deg) => deg * Math.PI / 180;
+        const degrees = (rad) => rad * 180 / Math.PI;
+        const dayOfYear = Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 86400000);
+        const Y = (2 * Math.PI / 365) * (dayOfYear - 1 + (date.getHours() - 12) / 24);
+        const eqtime = 229.18 * (0.000075 + 0.001868 * Math.cos(Y) - 0.032077 * Math.sin(Y) - 0.014615 * Math.cos(2 * Y) - 0.040849 * Math.sin(2 * Y));
+        const decl = 0.006918 - 0.399912 * Math.cos(Y) + 0.070257 * Math.sin(Y) - 0.006758 * Math.cos(2 * Y) + 0.000907 * Math.sin(2 * Y) - 0.002697 * Math.cos(3 * Y) + 0.00148 * Math.sin(3 * Y);
+        const ha = degrees(Math.acos(Math.cos(radians(90.833)) / (Math.cos(radians(lat)) * Math.cos(decl)) - Math.tan(radians(lat)) * Math.tan(decl)));
+        const time_offset = eqtime + 4 * lng;
+        const sunrise_utc = 720 - 4 * ha - time_offset;
+        const sunset_utc = 720 + 4 * ha - time_offset;
+        const tz = -date.getTimezoneOffset();
+        const sr = new Date(date); sr.setHours(0,0,0,0); sr.setMinutes(sunrise_utc + tz);
+        const ss = new Date(date); ss.setHours(0,0,0,0); ss.setMinutes(sunset_utc + tz);
+        return { sunrise: sr, sunset: ss };
+    };
+
+    const DB = {
+        0: { 
+            hari: "AHAD", planet: "SYAMS (Matahari)", khodam_awan: "KHURASYIN",
+            tawassul: "AHAD KHUSUSSON MALAIKATULLAHI RUQIYA'IL MA'AL KHODAMU MADZAB WA ASMA SURYANI LAL-THOHA-THIL SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
+            panggil_malak: "AJIBU YAA MALAK MADZHAB... BIHAQQI MALAKII RUQIYA'IL... WA BIHAQQI ASMA'IL A'WAN LAL-THOHA-THIL...",
+            panggil_awan: "AQBIL YAA... YAA KHURASYIN... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+        },
+        1: { 
+            hari: "ITSNAIN", planet: "QOMAR (Bulan)", khodam_awan: "KHANSAR",
+            tawassul: "ITSNAIN KHUSUSSON MALAIKATULLAHI JIBRO'IL MA'AL KHODAMU ABYADH WA ASMA SURYANI MAH-THOHA-THIL SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
+            panggil_malak: "AJIBU YAA MALAK ABYADH... BIHAQQI MALAKII JIBRA'IL... WA BIHAQQI ASMA'IL A'WAN MAH-THOHA-THIL...",
+            panggil_awan: "AQBIL YAA... YAA KHANSAR... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+        },
+        2: { 
+            hari: "TSULATSA", planet: "MARIKH (Mars)", khodam_awan: "HAM'IL",
+            tawassul: "TSULATSAA KHUSUSSON MALAIKATULLAHI SAMSAMAA'IL MA'AL KHODAMU AHMAR WA ASMA SURYANI QOH-THO-ITHIL SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
+            panggil_malak: "AJIBU YAA MALAK AHMAR... BIHAQQI MALAKII SAMSAMA'IL... WA BIHAQQI ASMA'IL A'WAN QOH-THO-ITHIL...",
+            panggil_awan: "AQBIL YAA... YAA HAM'IL... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+        },
+        3: { 
+            hari: "ARBI'A", planet: "'ATHARID (Merkurius)", khodam_awan: "SYAMRADAL",
+            tawassul: "ARBI'A KHUSUSSON MALAIKATULLAHI MIKAIL MA'AL KHODAMU BURQON WA ASMA SURYANI FAHTHO-ITHIL SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
+            panggil_malak: "AJIBU YAA MALAK BURQON... BIHAQQI MALAKII MIKA'IL... WA BIHAQQI ASMA'IL A'WAN FAHTHO-ITHIL...",
+            panggil_awan: "AQBIL YAA... YAA SYAMRADAL... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+        },
+        4: { 
+            hari: "KHOMIS", planet: "MUSYTARI (Jupiter)", khodam_awan: "MANYAA'IL",
+            tawassul: "KHOMIIS KHUSUSSON MALAIKATULLAHI SHARFAYAA'IL MA'AL KHODAMU SYAMHUURASYIN WA ASMA SURYANI NAH-HATHO-THIL SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
+            panggil_malak: "AJIBU YAA MALAK SHAMHURASYIN... BIHAQQI MALAKII SHARFAYA'IL... WA BIHAQQI ASMA'IL A'WAN NAH-HATHO-THIL...",
+            panggil_awan: "AQBIL YAA... YAA MANYAA'IL... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+        },
+        5: { 
+            hari: "JUM'AT", planet: "ZUHRAH (Venus)", khodam_awan: "SYAM'UUN",
+            tawassul: "JUMU'AT KHUSUSSON MALAIKATULLAHI ANYAA'IL MA'AL KHODAMU ZAWBA'AH WA ASMA SURYANI JAHLA-THO-THIL SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
+            panggil_malak: "AJIBU YAA MALAK ZAWBA'AH... BIHAQQI MALAKII ANYA'IL... WA BIHAQQI ASMA'IL A'WAN JAHLA-THO-THIL...",
+            panggil_awan: "AQBIL YAA... YAA SYAM'UUN... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+        },
+        6: { 
+            hari: "SABT", planet: "ZUHAL (Saturnus)", khodam_awan: "DA'WAN",
+            tawassul: "SABT KHUSUSSON MALAIKATULLAHI KASFAYAA'IL MA'AL KHODAMU MAYMUUN WA ASMA SURYANI LAKH-HATHO-THIL LAMUQFANJALIN SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
+            panggil_malak: "AJIBU YAA MALAK MAYMUN... BIHAQQI MALAKII KASFAYA'IL... WA BIHAQQI ASMA'IL A'WAN LAKH-HATHO-THIL...",
+            panggil_awan: "AQBIL YAA... YAA DA'WAN... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+        }
+    };
+
+    const App = () => {
+        const [now, setNow] = useState(new Date());
+        const [coords, setCoords] = useState({ lat: -6.2, lng: 106.8 });
+        const [sunTimes, setSunTimes] = useState(null);
+        const [showAI, setShowAI] = useState(false);
+        const [hajat, setHajat] = useState("");
+        const [aiRes, setAiRes] = useState("");
+        const [loading, setLoading] = useState(false);
+
+        const apiKey = ""; // API Key
+
+        useEffect(() => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(p => setCoords({ lat: p.coords.latitude, lng: p.coords.longitude }));
+            }
+            const t = setInterval(() => setNow(new Date()), 1000);
+            return () => clearInterval(t);
+        }, []);
+
+        useEffect(() => {
+            setSunTimes(calculateSunTimes(now, coords.lat, coords.lng));
+        }, [now.getDate(), coords]);
+
+        const data = useMemo(() => {
+            if (!sunTimes) return null;
+            const t = now.getTime();
+            const sr = sunTimes.sunrise.getTime();
+            const ss = sunTimes.sunset.getTime();
+            const day = now.getDay();
+            
+            const pIdx = (t < sr) ? (day === 0 ? 6 : day - 1) : day;
+            let aIdx = day;
+            if (t >= ss) aIdx = (day + 1) % 7; 
+            
+            return {
+                planet: DB[pIdx],
+                awan: DB[aIdx],
+                isNight: t >= ss || t < sr,
+                srStr: sunTimes.sunrise.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}),
+                ssStr: sunTimes.sunset.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})
+            };
+        }, [now, sunTimes]);
+
+        const handleAI = async () => {
+            if (!hajat) return;
+            setLoading(true);
+            try {
+                const prompt = `Analisis Falakiyah Singkat untuk hajat: "${hajat}". Hari: ${data.awan.hari}, Khodam: ${data.awan.khodam_awan}. Berikan saran 1 paragraf singkat dan doa pendek.`;
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const json = await res.json();
+                setAiRes(json.candidates[0].content.parts[0].text);
+            } catch (e) {
+                setAiRes("Gagal terhubung. Periksa koneksi.");
+            }
+            setLoading(false);
+        };
+
+        if (!data) return <div style={{color:'white', textAlign:'center', marginTop:50}}>Memuat Data Astronomi...</div>;
+
+        return (
+            <div className="app-container">
+                <div className="neon-pulse"></div>
+                
+                {/* Header */}
+                <div className="header">
+                    <div>
+                        <span className={`status-badge ${data.isNight ? 'status-night' : 'status-day'}`}>
+                            {data.isNight ? "🌙 Waktu Lailah" : "☀️ Waktu Nahar"}
+                        </span>
+                        <div className="time-display">
+                            {now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})}
+                        </div>
+                    </div>
+                    <div className="sun-times">
+                        <div>⬆️ {data.srStr}</div>
+                        <div>⬇️ {data.ssStr}</div>
+                    </div>
+                </div>
+
+                {/* Planet Card */}
+                <div className="card planet-card">
+                    <div style={{fontSize: '30px'}}>🪐</div>
+                    <div>
+                        <div className="content-label" style={{color:'#fde047'}}>Penguasa Falakiyah</div>
+                        <div style={{fontWeight:'bold', fontSize:'18px', color:'white'}}>{data.planet.planet}</div>
+                    </div>
+                </div>
+
+                {/* Section Wirid */}
+                <div className="section-title">Wirid Hari {data.awan.hari}</div>
+
+                {/* 1. Tawassul */}
+                <div className="card">
+                    <div className="content-label">1. Tawassul Malak (Pembuka)</div>
+                    <div className="content-text">"{data.awan.tawassul}"</div>
+                </div>
+
+                {/* 2. Panggil Malak */}
+                <div className="card">
+                    <div className="content-label" style={{color:'#93c5fd'}}>2. Panggil Malak & Sufla</div>
+                    <div className="content-text content-kunci">
+                        <div style={{position:'absolute', left:0, top:0, bottom:0, width:'3px', background:'#3b82f6'}}></div>
+                        &nbsp; "{data.awan.panggil_malak}"
+                    </div>
+                </div>
+
+                {/* 3. Panggil Awan */}
+                <div className="card" style={{borderColor:'rgba(16, 185, 129, 0.3)', background:'rgba(6, 78, 59, 0.2)'}}>
+                    <div className="content-label" style={{color:'#6ee7b7'}}>3. Panggil A'wan (Khusus)</div>
+                    <div className="content-text content-kunci">
+                         <div style={{position:'absolute', left:0, top:0, bottom:0, width:'3px', background:'#10b981', boxShadow:'0 0 10px #10b981'}}></div>
+                        &nbsp; "{data.awan.panggil_awan}"
+                    </div>
+                </div>
+
+                {/* AI Toggle */}
+                {!showAI ? (
+                    <button className="ai-btn" onClick={() => setShowAI(true)}>✨ Konsultasi Hajat The Power Of Cakra Buana Al-hikmah</button>
+                ) : (
+                    <div className="card" style={{marginTop:20}}>
+                        <div className="content-label" style={{color:'#facc15'}}>Khadim AI Assistant</div>
+                        <textarea className="ai-input" placeholder="Tulis hajat Anda..." value={hajat} onChange={e=>setHajat(e.target.value)}></textarea>
+                        <button className="ai-btn" onClick={handleAI} disabled={loading}>{loading ? 'Menerawang...' : 'Kirim Hajat'}</button>
+                        {aiRes && <div className="ai-result" dangerouslySetInnerHTML={{__html: marked.parse(aiRes)}}></div>}
+                        <div style={{textAlign:'center', marginTop:10, fontSize:10, color:'#555'}} onClick={() => setShowAI(false)}>Tutup</div>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+</script>
+
+</body>
+</html>
