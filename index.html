@@ -3,188 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Falakiyah Premium</title>
+    <title>Falakiyah Mystic Pro</title>
     
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <!-- React Framework Only -->
+    <!-- IMPORT FONT MISTIK DARI GOOGLE -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&family=Philosopher:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Frameworks -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-    <!-- CSS LANGSUNG (ANTI-ERROR / ANTI-JELEK) -->
     <style>
-        /* RESET & BASE */
+        /* --- BASE STYLES --- */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Philosopher', sans-serif; /* Font teks biasa */
             background: #000;
             color: #fff;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 15px;
+            padding: 20px 15px;
             overflow-x: hidden;
         }
 
-        /* ANIMATED BACKGROUND (AURORA) */
-        .bg-aurora {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            z-index: -2;
+        /* --- BACKGROUND LANGIT MISTIS --- */
+        .bg-cosmos {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            /* Langit Biru Gelap ke Hitam (Mystic Sky) */
+            background: radial-gradient(circle at 50% 0%, #1a237e, #000051 40%, #000000 90%);
+            z-index: -3;
         }
-        .bg-stars {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(white 1px, transparent 1px);
-            background-size: 50px 50px;
-            opacity: 0.2;
-            z-index: -1;
+        .stars-twinkle {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 2.5px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 1.5px);
+            background-size: 550px 550px, 350px 350px;
+            animation: twinkle 5s ease-in-out infinite alternate;
+            z-index: -2; opacity: 0.8;
         }
+        @keyframes twinkle { 0% { opacity: 0.4; transform: scale(1); } 100% { opacity: 1; transform: scale(1.05); } }
 
-        /* MAIN CARD CONTAINER */
+        /* --- CONTAINER DENGAN BORDER BERJALAN (WALKING NEON) --- */
         .app-container {
-            width: 100%;
-            max-width: 400px; /* Ukuran standar HP */
-            background: rgba(20, 20, 20, 0.85); /* Gelap transparan */
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            width: 100%; max-width: 420px;
+            background: rgba(10, 15, 30, 0.85); /* Kaca Gelap */
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
             padding-bottom: 20px;
-            overflow: hidden;
             position: relative;
+            z-index: 1;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
 
-        /* NEON BORDER EFFECT */
-        .neon-pulse {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 25px;
-            border: 2px solid transparent;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
-            animation: pulseBorder 3s infinite alternate;
-            pointer-events: none;
+        /* Border Berjalan menggunakan pseudo-element */
+        .app-container::before {
+            content: ''; position: absolute; inset: -3px; border-radius: 24px;
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%; z-index: -1;
+            animation: glowing-border 20s linear infinite;
+            filter: blur(2px);
         }
-        @keyframes pulseBorder {
-            0% { border-color: rgba(0, 255, 136, 0.3); }
-            100% { border-color: rgba(0, 255, 136, 0.8); box-shadow: 0 0 25px rgba(0, 255, 136, 0.4); }
+        @keyframes glowing-border { 0% { background-position: 0 0; } 50% { background-position: 400% 0; } 100% { background-position: 0 0; } }
+
+        /* Inner Background cover agar konten tidak tertutup border */
+        .app-container::after {
+            content: ''; position: absolute; inset: 0; background: rgba(13, 17, 23, 0.9);
+            border-radius: 20px; z-index: -1;
         }
 
-        /* HEADER */
+        /* --- HEADER & JAM (FONT MISTIK) --- */
         .header {
-            padding: 20px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+            padding: 25px 20px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .time-big {
+            font-family: 'Cinzel', serif; /* Font Mistik Utama */
+            font-size: 42px; font-weight: 700; color: #fff;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5), 0 0 20px rgba(0, 255, 136, 0.3);
+            line-height: 1;
         }
         .status-badge {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 4px 8px;
-            border-radius: 6px;
-            display: inline-block;
-            margin-bottom: 5px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+            padding: 5px 10px; border-radius: 20px; display: inline-block; margin-bottom: 8px;
+            font-family: 'Cinzel Decorative', cursive;
         }
-        .status-day { color: #facc15; background: rgba(250, 204, 21, 0.15); }
-        .status-night { color: #60a5fa; background: rgba(96, 165, 250, 0.15); }
-        
-        .time-display { font-size: 32px; font-weight: 700; color: #fff; letter-spacing: -1px; line-height: 1; }
-        .sun-times { font-size: 11px; color: #aaa; text-align: right; line-height: 1.4; font-family: monospace; }
+        .status-day { color: #ffd700; border: 1px solid #ffd700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+        .status-night { color: #00ffff; border: 1px solid #00ffff; box-shadow: 0 0 10px rgba(0, 255, 255, 0.2); }
 
-        /* BUBBLES & CARDS */
-        .section-title {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #10b981; /* Green Neon */
-            margin: 15px 20px 8px;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 5px;
+        /* --- BUBBLE PENGUASA HARI (GRADASI & KELAP-KELIP) --- */
+        .master-bubble {
+            margin: 20px 15px; padding: 20px;
+            border-radius: 16px;
+            /* Gradasi Mewah */
+            background: linear-gradient(135deg, rgba(72, 61, 139, 0.4), rgba(0, 0, 0, 0.6));
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.2), inset 0 0 20px rgba(0,0,0,0.5);
+            position: relative; overflow: hidden;
+            animation: pulse-bubble 4s infinite alternate;
         }
+        @keyframes pulse-bubble { 0% { box-shadow: 0 0 10px rgba(138, 43, 226, 0.1); } 100% { box-shadow: 0 0 25px rgba(138, 43, 226, 0.4); } }
+
+        .master-title {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 14px; color: #ffd700; text-align: center; margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3); padding-bottom: 10px;
+        }
+
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
+        .info-label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; }
+        .info-val { font-family: 'Philosopher', sans-serif; font-weight: 700; font-size: 14px; color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
+        
+        /* Wirid Badge */
+        .wirid-badge {
+            background: linear-gradient(90deg, #ff0000, #ff8800);
+            color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.4); font-family: 'Cinzel', serif;
+        }
+
+        /* --- CARDS BIASA --- */
+        .section-header {
+            font-family: 'Cinzel Decorative', cursive;
+            color: #00ff88; font-size: 12px; margin: 20px 15px 10px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-header::after { content:''; flex:1; height:1px; background: linear-gradient(90deg, #00ff88, transparent); }
 
         .card {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 15px;
-            margin: 0 15px 12px;
-            position: relative;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px; padding: 15px; margin: 0 15px 12px;
+        }
+        .card-text { font-size: 14px; line-height: 1.6; color: #e0e0e0; font-style: italic; }
+        .card-kunci {
+            font-family: 'Courier New', monospace; font-size: 12px; color: #7fffd4;
+            background: rgba(0, 20, 20, 0.5); padding: 12px; border-radius: 8px;
+            border-left: 3px solid #00ff88;
         }
 
-        .planet-card {
-            background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(0,0,0,0));
-            border-color: rgba(234, 179, 8, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        /* TYPOGRAPHY CONTENT */
-        .content-label { font-size: 10px; text-transform: uppercase; color: #888; font-weight: 700; margin-bottom: 4px; }
-        .content-text { font-size: 13px; line-height: 1.6; color: #eee; font-style: italic; font-family: 'Georgia', serif; text-align: justify; }
-        .content-kunci { font-family: monospace; font-size: 12px; color: #a7f3d0; font-style: normal; }
-        
-        /* HIGHLIGHTS */
-        .hl-yellow { color: #fde047; font-weight: bold; }
-        .hl-blue { color: #93c5fd; font-weight: bold; }
-        .hl-green { color: #6ee7b7; font-weight: bold; }
-
-        /* AI SECTION */
+        /* --- AI --- */
         .ai-btn {
-            display: block;
-            width: calc(100% - 30px);
-            margin: 10px auto;
-            padding: 12px;
-            background: linear-gradient(90deg, #059669, #0d9488);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-            cursor: pointer;
+            margin: 20px 15px 5px; width: calc(100% - 30px); padding: 12px;
+            background: linear-gradient(90deg, #11998e, #38ef7d); border: none; border-radius: 12px;
+            color: #000; font-family: 'Cinzel', serif; font-weight: 700; cursor: pointer;
+            box-shadow: 0 0 20px rgba(56, 239, 125, 0.3); transition: transform 0.2s;
         }
-        .ai-input {
-            width: 100%;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
-            font-family: sans-serif;
-            font-size: 13px;
-            min-height: 80px;
-            margin-bottom: 10px;
-        }
-        .ai-result { font-size: 12px; color: #ddd; margin-top: 10px; line-height: 1.5; }
-
-        /* ICONS */
-        svg { width: 18px; height: 18px; vertical-align: middle; }
+        .ai-btn:active { transform: scale(0.98); }
+        
+        .ai-panel { background: rgba(0,0,0,0.6); padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .ai-input { width: 100%; background: #000; border: 1px solid #333; color: #00ff88; padding: 10px; border-radius: 8px; font-family: monospace; }
+        .ai-result { margin-top: 15px; color: #ddd; font-size: 13px; line-height: 1.6; border-left: 2px solid #ffd700; padding-left: 10px; }
     </style>
 </head>
 <body>
 
-<div class="bg-aurora"></div>
-<div class="bg-stars"></div>
+<div class="bg-cosmos"></div>
+<div class="stars-twinkle"></div>
 <div id="root"></div>
 
 <script type="text/babel">
     const { useState, useEffect, useMemo } = React;
 
-    // --- LOGIKA MATH (NOAA) ---
+    // --- ALGORITMA MATH (NOAA) ---
     const calculateSunTimes = (date, lat, lng) => {
         const radians = (deg) => deg * Math.PI / 180;
         const degrees = (rad) => rad * 180 / Math.PI;
@@ -202,48 +191,49 @@
         return { sunrise: sr, sunset: ss };
     };
 
+    // --- DATABASE LENGKAP (SUDAH TAHQIQ + JUMLAH WIRID) ---
     const DB = {
         0: { 
-            hari: "AHAD", planet: "SYAMS (Matahari)", khodam_awan: "KHURASYIN",
+            hari: "AHAD", planet: "SYAMS", a_wan: "KHURASYIN", malak: "RUQIYA'IL", sufla: "MADZHAB", wirid: "100X",
             tawassul: "AHAD KHUSUSSON MALAIKATULLAHI RUQIYA'IL MA'AL KHODAMU MADZAB WA ASMA SURYANI LAL-THOHA-THIL SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
-            panggil_malak: "AJIBU YAA MALAK MADZHAB... BIHAQQI MALAKII RUQIYA'IL... WA BIHAQQI ASMA'IL A'WAN LAL-THOHA-THIL...",
-            panggil_awan: "AQBIL YAA... YAA KHURASYIN... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+            panggil_malak: "AJIIBU YAA MALAK MADZHAB... BIHAQQI MALAKIL MUWAKKILI 'ALAIKA RUQIYA'IL... ALLADZI TASRO'U FII KHIDMATIIHI WA IJABATIIHI SYAI'U LILLAHI LAHUMUL FATIHAH... AL-FATIHAH 1X",
+            panggil_awan: "AQBIL YAA... KHURASYIN... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
         },
         1: { 
-            hari: "ITSNAIN", planet: "QOMAR (Bulan)", khodam_awan: "KHANSAR",
+            hari: "ITSNAIN", planet: "QOMAR", a_wan: "KHANSAR", malak: "JIBRA'IL", sufla: "ABYADH", wirid: "698X",
             tawassul: "ITSNAIN KHUSUSSON MALAIKATULLAHI JIBRO'IL MA'AL KHODAMU ABYADH WA ASMA SURYANI MAH-THOHA-THIL SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
-            panggil_malak: "AJIBU YAA MALAK ABYADH... BIHAQQI MALAKII JIBRA'IL... WA BIHAQQI ASMA'IL A'WAN MAH-THOHA-THIL...",
-            panggil_awan: "AQBIL YAA... YAA KHANSAR... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+            panggil_malak: "AJIIBU YAA MALAK ABYADH... BIHAQQI MALAKIL MUWAKKILI 'ALAIKA JIBRA'IL... ALLADZI TASRO'U FII KHIDMATIIHI WA IJABATIIHI SYAI'U LILLAHI LAHUMUL FATIHAH... AL-FATIHAH 1X",
+            panggil_awan: "AQBIL YAA... KHANSAR... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
         },
         2: { 
-            hari: "TSULATSA", planet: "MARIKH (Mars)", khodam_awan: "HAM'IL",
+            hari: "TSULATSA", planet: "MARIKH", a_wan: "HAM'IL", malak: "SAMSAMA'IL", sufla: "AHMAR", wirid: "1.120X",
             tawassul: "TSULATSAA KHUSUSSON MALAIKATULLAHI SAMSAMAA'IL MA'AL KHODAMU AHMAR WA ASMA SURYANI QOH-THO-ITHIL SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
-            panggil_malak: "AJIBU YAA MALAK AHMAR... BIHAQQI MALAKII SAMSAMA'IL... WA BIHAQQI ASMA'IL A'WAN QOH-THO-ITHIL...",
-            panggil_awan: "AQBIL YAA... YAA HAM'IL... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+            panggil_malak: "AJIIBU YAA MALAK AHMAR... BIHAQQI MALAKIL MUWAKKILI 'ALAIKA SAMSAMA'IL... ALLADZI TASRO'U FII KHIDMATIIHI WA IJABATIIHI SYAI'U LILLAHI LAHUMUL FATIHAH... AL-FATIHAH 1X",
+            panggil_awan: "AQBIL YAA... HAM'IL... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
         },
         3: { 
-            hari: "ARBI'A", planet: "'ATHARID (Merkurius)", khodam_awan: "SYAMRADAL",
+            hari: "ARBI'A", planet: "'ATHARID", a_wan: "SYAMRADAL", malak: "MIKA'IL", sufla: "BURQON", wirid: "362X",
             tawassul: "ARBI'A KHUSUSSON MALAIKATULLAHI MIKAIL MA'AL KHODAMU BURQON WA ASMA SURYANI FAHTHO-ITHIL SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
-            panggil_malak: "AJIBU YAA MALAK BURQON... BIHAQQI MALAKII MIKA'IL... WA BIHAQQI ASMA'IL A'WAN FAHTHO-ITHIL...",
-            panggil_awan: "AQBIL YAA... YAA SYAMRADAL... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+            panggil_malak: "AJIIBU YAA MALAK BURQON... BIHAQQI MALAKIL MUWAKKILI 'ALAIKA MIKA'IL... ALLADZI TASRO'U FII KHIDMATIIHI WA IJABATIIHI SYAI'U LILLAHI LAHUMUL FATIHAH... AL-FATIHAH 1X",
+            panggil_awan: "AQBIL YAA... SYAMRADAL... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
         },
         4: { 
-            hari: "KHOMIS", planet: "MUSYTARI (Jupiter)", khodam_awan: "MANYAA'IL",
+            hari: "KHOMIS", planet: "MUSYTARI", a_wan: "MANYAA'IL", malak: "SHARFAYA'IL", sufla: "SHAMHURASYIN", wirid: "797X",
             tawassul: "KHOMIIS KHUSUSSON MALAIKATULLAHI SHARFAYAA'IL MA'AL KHODAMU SYAMHUURASYIN WA ASMA SURYANI NAH-HATHO-THIL SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
-            panggil_malak: "AJIBU YAA MALAK SHAMHURASYIN... BIHAQQI MALAKII SHARFAYA'IL... WA BIHAQQI ASMA'IL A'WAN NAH-HATHO-THIL...",
-            panggil_awan: "AQBIL YAA... YAA MANYAA'IL... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+            panggil_malak: "AJIIBU YAA MALAK SHAMHURASYIN... BIHAQQI MALAKIL MUWAKKILI 'ALAIKA SHARFAYA'IL... ALLADZI TASRO'U FII KHIDMATIIHI WA IJABATIIHI SYAI'U LILLAHI LAHUMUL FATIHAH... AL-FATIHAH 1X",
+            panggil_awan: "AQBIL YAA... MANYAA'IL... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
         },
         5: { 
-            hari: "JUM'AT", planet: "ZUHRAH (Venus)", khodam_awan: "SYAM'UUN",
+            hari: "JUM'AT", planet: "ZUHRAH", a_wan: "SYAM'UUN", malak: "ANYA'IL", sufla: "ZAWBA'AH", wirid: "600X",
             tawassul: "JUMU'AT KHUSUSSON MALAIKATULLAHI ANYAA'IL MA'AL KHODAMU ZAWBA'AH WA ASMA SURYANI JAHLA-THO-THIL SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
-            panggil_malak: "AJIBU YAA MALAK ZAWBA'AH... BIHAQQI MALAKII ANYA'IL... WA BIHAQQI ASMA'IL A'WAN JAHLA-THO-THIL...",
-            panggil_awan: "AQBIL YAA... YAA SYAM'UUN... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+            panggil_malak: "AJIIBU YAA MALAK ZAWBA'AH... BIHAQQI MALAKIL MUWAKKILI 'ALAIKA ANYA'IL... ALLADZI TASRO'U FII KHIDMATIIHI WA IJABATIIHI SYAI'U LILLAHI LAHUMUL FATIHAH... AL-FATIHAH 1X",
+            panggil_awan: "AQBIL YAA... SYAM'UUN... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
         },
         6: { 
-            hari: "SABT", planet: "ZUHAL (Saturnus)", khodam_awan: "DA'WAN",
+            hari: "SABT", planet: "ZUHAL", a_wan: "DA'WAN", malak: "KASFAYA'IL", sufla: "MAYMUN", wirid: "549X",
             tawassul: "SABT KHUSUSSON MALAIKATULLAHI KASFAYAA'IL MA'AL KHODAMU MAYMUUN WA ASMA SURYANI LAKH-HATHO-THIL LAMUQFANJALIN SYAI'UN LILLAHI LAHUM... AL-FATIHAH 1X",
-            panggil_malak: "AJIBU YAA MALAK MAYMUN... BIHAQQI MALAKII KASFAYA'IL... WA BIHAQQI ASMA'IL A'WAN LAKH-HATHO-THIL...",
-            panggil_awan: "AQBIL YAA... YAA DA'WAN... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
+            panggil_malak: "AJIIBU YAA MALAK MAYMUN... BIHAQQI MALAKIL MUWAKKILI 'ALAIKA KASFAYA'IL... ALLADZI TASRO'U FII KHIDMATIIHI WA IJABATIIHI SYAI'U LILLAHI LAHUMUL FATIHAH... AL-FATIHAH 1X",
+            panggil_awan: "AQBIL YAA... DA'WAN... YAA KHUDDAAMA HADZIHIL-LAILATI.. WAF'AL... BARAKALLAHU FIIKUM WA 'ALAIKUM"
         }
     };
 
@@ -251,11 +241,12 @@
         const [now, setNow] = useState(new Date());
         const [coords, setCoords] = useState({ lat: -6.2, lng: 106.8 });
         const [sunTimes, setSunTimes] = useState(null);
+        
+        // AI STATE
         const [showAI, setShowAI] = useState(false);
         const [hajat, setHajat] = useState("");
         const [aiRes, setAiRes] = useState("");
         const [loading, setLoading] = useState(false);
-
         const apiKey = ""; // API Key
 
         useEffect(() => {
@@ -277,7 +268,9 @@
             const ss = sunTimes.sunset.getTime();
             const day = now.getDay();
             
+            // PLANET (Ikut Sunrise)
             const pIdx = (t < sr) ? (day === 0 ? 6 : day - 1) : day;
+            // A'WAN (Ikut Maghrib)
             let aIdx = day;
             if (t >= ss) aIdx = (day + 1) % 7; 
             
@@ -292,92 +285,100 @@
 
         const handleAI = async () => {
             if (!hajat) return;
-            setLoading(true);
+            setLoading(true); setAiRes("");
             try {
-                const prompt = `Analisis Falakiyah Singkat untuk hajat: "${hajat}". Hari: ${data.awan.hari}, Khodam: ${data.awan.khodam_awan}. Berikan saran 1 paragraf singkat dan doa pendek.`;
+                const prompt = `Analisis Falakiyah Singkat (Mistis): Hari ${data.awan.hari}, Planet ${data.planet.planet}, Khodam ${data.awan.a_wan}. Hajat: "${hajat}". Cocok/Tidak? Doa pendek?`;
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
                 const json = await res.json();
                 setAiRes(json.candidates[0].content.parts[0].text);
-            } catch (e) {
-                setAiRes("Gagal terhubung. Periksa koneksi.");
-            }
+            } catch (e) { setAiRes("Gagal menerawang. Coba lagi."); }
             setLoading(false);
         };
 
-        if (!data) return <div style={{color:'white', textAlign:'center', marginTop:50}}>Memuat Data Astronomi...</div>;
+        if (!data) return <div style={{color:'#00ff88', textAlign:'center', marginTop:100, fontFamily:'Cinzel'}}>MENGHITUNG HISAB...</div>;
 
         return (
             <div className="app-container">
-                <div className="neon-pulse"></div>
                 
-                {/* Header */}
+                {/* HEADER TIME */}
                 <div className="header">
                     <div>
-                        <span className={`status-badge ${data.isNight ? 'status-night' : 'status-day'}`}>
-                            {data.isNight ? "🌙 Waktu Lailah" : "☀️ Waktu Nahar"}
-                        </span>
-                        <div className="time-display">
+                        <div className={`status-badge ${data.isNight ? 'status-night' : 'status-day'}`}>
+                            {data.isNight ? "WAKTU LAILAH" : "Cakra Buana Al-Hikmah"}
+                        </div>
+                        <div className="time-big">
                             {now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})}
                         </div>
                     </div>
-                    <div className="sun-times">
-                        <div>⬆️ {data.srStr}</div>
-                        <div>⬇️ {data.ssStr}</div>
+                    <div style={{textAlign:'right', fontSize:'10px', color:'#aaa', fontFamily:'monospace'}}>
+                        <div>☀ {data.srStr}</div>
+                        <div>🌙 {data.ssStr}</div>
                     </div>
                 </div>
 
-                {/* Planet Card */}
-                <div className="card planet-card">
-                    <div style={{fontSize: '30px'}}>🪐</div>
-                    <div>
-                        <div className="content-label" style={{color:'#fde047'}}>Penguasa Falakiyah</div>
-                        <div style={{fontWeight:'bold', fontSize:'18px', color:'white'}}>{data.planet.planet}</div>
+                {/* === BUBBLE PENGUASA HARI (ALL IN ONE) === */}
+                <div className="master-bubble">
+                    <div className="master-title">✨ PENGUASA FALAKIYAH ✨</div>
+                    
+                    <div className="info-row">
+                        <span className="info-label">🪐 Planet</span>
+                        <span className="info-val" style={{color:'#ffd700'}}>{data.planet.planet}</span>
+                    </div>
+                    <div className="info-row">
+                        <span className="info-label">🕊️ Malak Uluwi</span>
+                        <span className="info-val" style={{color:'#81d4fa'}}>{data.planet.malak}</span>
+                    </div>
+                    <div className="info-row">
+                        <span className="info-label">🔥 Raja Jin (Sufla)</span>
+                        <span className="info-val" style={{color:'#ef9a9a'}}>{data.planet.sufla}</span>
+                    </div>
+                    <div className="info-row">
+                        <span className="info-label">⚡ Khodam A'wan</span>
+                        <span className="info-val" style={{color:'#69f0ae'}}>{data.awan.a_wan}</span>
+                    </div>
+                    <div style={{textAlign:'center', marginTop:10}}>
+                        <span className="wirid-badge">WIRID: {data.awan.wirid}</span>
                     </div>
                 </div>
 
-                {/* Section Wirid */}
-                <div className="section-title">Wirid Hari {data.awan.hari}</div>
-
-                {/* 1. Tawassul */}
+                {/* 1. TAWASSUL MALAK */}
+                <div className="section-header">1. TAWASSUL MALAK (PEMBUKA)</div>
                 <div className="card">
-                    <div className="content-label">1. Tawassul Malak (Pembuka)</div>
-                    <div className="content-text">"{data.awan.tawassul}"</div>
+                    <div className="card-text">"{data.awan.tawassul}"</div>
                 </div>
 
-                {/* 2. Panggil Malak */}
+                {/* 2. PANGGIL MALAK & SUFLA */}
+                <div className="section-header">2. PANGGIL MALAK & SUFLA</div>
                 <div className="card">
-                    <div className="content-label" style={{color:'#93c5fd'}}>2. Panggil Malak & Sufla</div>
-                    <div className="content-text content-kunci">
-                        <div style={{position:'absolute', left:0, top:0, bottom:0, width:'3px', background:'#3b82f6'}}></div>
-                        &nbsp; "{data.awan.panggil_malak}"
+                    <div className="card-kunci">
+                        {data.awan.panggil_malak}
                     </div>
                 </div>
 
-                {/* 3. Panggil Awan */}
-                <div className="card" style={{borderColor:'rgba(16, 185, 129, 0.3)', background:'rgba(6, 78, 59, 0.2)'}}>
-                    <div className="content-label" style={{color:'#6ee7b7'}}>3. Panggil A'wan (Khusus)</div>
-                    <div className="content-text content-kunci">
-                         <div style={{position:'absolute', left:0, top:0, bottom:0, width:'3px', background:'#10b981', boxShadow:'0 0 10px #10b981'}}></div>
-                        &nbsp; "{data.awan.panggil_awan}"
+                {/* 3. PANGGIL A'WAN */}
+                <div className="section-header">3. PANGGIL A'WAN (KHUSUS)</div>
+                <div className="card">
+                    <div className="card-kunci" style={{borderColor:'#00ff88', color:'#ccffcc'}}>
+                        {data.awan.panggil_awan}
                     </div>
                 </div>
 
-                {/* AI Toggle */}
+                {/* AI TOGGLE */}
                 {!showAI ? (
-                    <button className="ai-btn" onClick={() => setShowAI(true)}>✨ Konsultasi Hajat The Power Of Cakra Buana Al-hikmah</button>
+                    <button className="ai-btn" onClick={() => setShowAI(true)}>✨ Tanya Hikmah</button>
                 ) : (
-                    <div className="card" style={{marginTop:20}}>
-                        <div className="content-label" style={{color:'#facc15'}}>Khadim AI Assistant</div>
+                    <div className="ai-panel">
+                        <div style={{color:'#ffd700', fontFamily:'Cinzel Decorative', fontSize:12, marginBottom:10}}>KHADIM AI ASSISTANT</div>
                         <textarea className="ai-input" placeholder="Tulis hajat Anda..." value={hajat} onChange={e=>setHajat(e.target.value)}></textarea>
-                        <button className="ai-btn" onClick={handleAI} disabled={loading}>{loading ? 'Menerawang...' : 'Kirim Hajat'}</button>
+                        <button className="ai-btn" style={{margin:'0 0 10px'}} onClick={handleAI} disabled={loading}>{loading ? 'MENERAWANG...' : 'TANYAKAN'}</button>
                         {aiRes && <div className="ai-result" dangerouslySetInnerHTML={{__html: marked.parse(aiRes)}}></div>}
-                        <div style={{textAlign:'center', marginTop:10, fontSize:10, color:'#555'}} onClick={() => setShowAI(false)}>Tutup</div>
+                        <div style={{textAlign:'center', fontSize:10, color:'#666', marginTop:10}} onClick={() => setShowAI(false)}>TUTUP</div>
                     </div>
                 )}
+
             </div>
         );
     };
